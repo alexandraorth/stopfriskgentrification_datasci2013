@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Stop and Frisk Chloropleth </title>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>    
+</head>
+
+
+<style>
+    path{
+        stroke: white;
+    }
+    .district{
+        fill: #D3D3D3;
+    }
+    .district.PHIGH { fill: #cdd; }
+    .district.CGARD { fill: #cdc; }
+    .district.BHIGH { fill: #dcd; }
+    .district.CHSO  { fill: #FFFAC6;}
+    .district.BSTUY { fill: #FFCEB6;}
+    .district.BUSHW { fill: #D0D98B;}
+</style>
+
+
+<body>
+    <div id="map"></div>
+</body>
+
+
+<script type="text/javascript">
+
+var width = 960,
+height = 800;
+
+var ids = [1, 2,  3,  4,  "PHIGH",  6,  7,  8 , 9 ,10, 11, 12 , "CGARD", 14, 15, 16, 17, 18 ,19 ,20 ,21 ,22, 23, 24 ,25 ,26, 27 ,28 ,29 ,30, 31 ,32, 33, "CHSO", 35, 36 ,37, 38, 39 ,40, 41 ,42 ,43, "BHIGH" ,45 ,46 ,47 ,48 ,49 ,50 ,51 ,52 ,53 ,54 ,55 ,56 ,57 ,58 ,59, 60, 61, "BSTUY", 63, "BUSHW", 65, 66, 67, 68, 69 , 70, 71]
+
+d3.json("comm_districts.json", function(error, nyb){
+    var districts = topojson.feature(nyb, nyb.objects.places).features;
+
+    var projection = d3.geo.mercator()
+        .center([-73.9411, 40.6833])
+        .scale(200000)
+        .translate([(width) / 1.8, (height)/1.8]);
+
+    var path = d3.geo.path()
+        .projection(projection);
+
+    var svg = d3.select("#map").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    svg.selectAll(".districts")
+        .data(districts)
+        .enter().append("path")
+        .attr("class", function(d,i){ return "district " + ids[i]; })
+        .attr("d", path)
+        .on("mouseover", function(d,i){console.log(ids[i])});
+    });
+
+</script>
+</html>
