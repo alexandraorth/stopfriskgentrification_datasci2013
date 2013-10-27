@@ -34,7 +34,7 @@
 
 <body>
     <div id="map"></div>
-    <h1> Stop & Frisk Frequency </h1>
+    <h1> Total Number of Stops </h1>
     <p> 2005 </p>
 </body>
 
@@ -48,11 +48,15 @@ var ids = [1, 1,  1,  1,  77,  1, 1, 1, 1, 1, 1, 1 , 76, 1, 1, 1, 1, 1, 1, 1, 1,
 
 var years = ["2005", "2006", "2007", "2008", "2009", "2010", "2011"];
 
+var legend_labels = ['< 100 stops', '>1000 stops', '> 3000 stops', '> 5000 stops', '> 7000 stops', '> 9000 stops', '> 11000 stops', '> 13000 stops', '> 18000 stops']
+
+var color_domain = [100, 1000, 3000, 5000, 7000, 9000, 11000, 13000, 18000];
+
 var i = 0;
 
 var color = d3.scale.threshold()
-    .domain([1, 1.1, 1.13, 1.2, 1.25])
-    .range(["#e3e3e3", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"]);
+    .domain([100, 1000, 3000, 5000, 7000, 9000, 11000, 13000, 18000])
+    .range(["#e3e3e3", "#ffffd9", "#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]);
 
 queue()
     .defer(d3.json, "comm_districts.json")
@@ -84,12 +88,32 @@ function ready(error, nyb, data){
         .attr("class", function(d,i){ return ids[i]; })
         .attr("d", path)
 
+    var legend = svg.selectAll("g.legend")
+        .data(color_domain)
+        .enter().append("g")
+        .attr("class", "legend");
+
+    var ls_w = 20, ls_h = 20;
+
+    legend.append("rect")
+        .attr("x", 20)
+        .attr("y", function(d, i){ return height - (i*ls_h) - 2*ls_h;})
+        .attr("width", ls_w)
+        .attr("height", ls_h)
+        .style("fill", function(d, i) { return color(d); })
+        .style("opacity", 0.8);
+
+    legend.append("text")
+        .attr("x", 50)
+        .attr("y", function(d, i){ return height - (i*ls_h) - ls_h - 4;})
+        .text(function(d, i){ return legend_labels[i]; });
+
     redraw();        
 
     setInterval(function() {redraw();}, 2000);
 
     function redraw(){
-        data.forEach(function(d){ if(d.year === years[i]) rateById[d.id] = + d.ratest;});
+        data.forEach(function(d){ if(d.year === years[i]) rateById[d.id] = + d.count;});
         
         d3.select("p").text(years[i]);
 
