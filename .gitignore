@@ -48,3 +48,5 @@ nosetests.xml
 *swp
 *~
 
+data/csv_files
+data/xls_files
