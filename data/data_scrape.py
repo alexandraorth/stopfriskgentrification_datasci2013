@@ -7,8 +7,6 @@
 import csv
 import the_strings, the_constants
 
-columns = ["2000", "2010", "pct_change", "slope", "index"]
-
 # Notes: BNX = Bronx, MNH = Manhattan, QUN = Queens, BRK = Brooklyn, SI = Staten Island
 
 num_of_cds = {"BNX":12, "BRK":18, "MNH":12, "QUN":14, "SI":3}
@@ -25,12 +23,14 @@ def slope(after, before):
 	return (after - before) / 10.0
 
 def pct_change(after, before):
+	print after
+	print before
 	return (after - before) / float(before)
 
 def index(value, baseline):
 	if value > baseline:
 		return 1
-	elif value < baseline:
+	elif value >= (0.9 * baseline) or value <= (1.1 * baseline):
 		return -1
 	else:
 		return 0
@@ -70,39 +70,53 @@ def mnh_aux_parse(dictionary, start_pos, row):
 	for j in range(7, 13):
 		dictionary[j].append(comma_int(row[start_pos + 4 * (j-3)]))
 
-def demo_2000_parse(stop_index, cursor, dictionary, reader):
-	BOOBS = 1
-	POPULATION_TOTAL_LINE = 3
-	POPULATION_WHITE_NONHISPANIC = 4
-	POPULATION_BLACK_NONHISPANIC = 5
-	POPULATION_HISPANIC = 9
-	RENTER_OCCUPIED = 47
-	OWNER_OCCUPIED = 48
-
+def demo_2000_parse(cursor, dictionary, reader, key):
+	BOOBS = 0
+	POPULATION_TOTAL_LINE = 2
+	POPULATION_WHITE_NONHISPANIC = 3
+	POPULATION_BLACK_NONHISPANIC = 4
+	POPULATION_HISPANIC = 8
+	RENTER_OCCUPIED = 46
+	OWNER_OCCUPIED = 47
 	SKIP = 60
+
 	district = 0
-	cursor = 1
-	print dictionary.keys()
-	while(cursor <= 60 * len(dictionary.keys())): #End of index
+	ctr = 0
+
+	while ctr != cursor:
+		ctr += 1
+		g = reader.next()
+		# print g
+
+	print "CURRENT BOROUGH: " + key
+	print "CURSOR VALUE: " + str(cursor)
+	while(ctr < cursor + num_of_cds[key] * 60): #End of index
 		row = reader.next()
+		# print str(ctr) + " : "
 		# print row
-		if cursor % SKIP == BOOBS:
+		if ctr % SKIP == BOOBS:
 			district += 1
-		elif cursor % SKIP == POPULATION_TOTAL_LINE:
+		elif ctr % SKIP == POPULATION_TOTAL_LINE:
+			print "ADDING STUFF FROM THIS ROW"
+			print row
 			dictionary[district].append(comma_int(row[0].split()[2]))
-		elif cursor % SKIP in (POPULATION_TOTAL_LINE, POPULATION_WHITE_NONHISPANIC, POPULATION_BLACK_NONHISPANIC, POPULATION_HISPANIC, RENTER_OCCUPIED, OWNER_OCCUPIED):
+		elif ctr % SKIP in (POPULATION_WHITE_NONHISPANIC, POPULATION_BLACK_NONHISPANIC, POPULATION_HISPANIC, RENTER_OCCUPIED, OWNER_OCCUPIED):
 			if row[4] != '':
+				print "ADDING STUFF FROM THIS ROW"
+				print row
 				dictionary[district].append(comma_int(row[4]))
 			else:
+				print "ADDING STUFF FROM THIS ROW"
+				print row
 				dictionary[district].append(comma_int(row[3]))
-		cursor += 1
+		ctr += 1
 
 
 def demo_2010_parse(reader, dictionary, dict_tag, start_index):
-	TOTAL_POPULATION = 36
-	WHITE = 40
-	BLACK = 41
-	HISPANIC = 76
+	TOTAL_POPULATION = 35
+	WHITE = 39
+	BLACK = 40
+	HISPANIC = 75
 
 	DESIRED_INDEX = start_index
 	i = 0
@@ -172,17 +186,18 @@ def add_demographic_info(file2000, file2010):
 		with open(file2010, 'rb') as demo_2010:
 			reader_old = csv.reader(demo_2000)
 			reader_new = csv.reader(demo_2010)
+			startings = {"BNX": 0, "BRK": 720, "MNH":1800, "QUN": 2520, "SI": 3360}
 			#Add the 2000 info
-			i = 0
+			i = 1
+			print "IN DEMOGRAPHIC INFO\n\n\n"
 			for k,v in cd_info.iteritems():
+				demo_2000.seek(0)
 				demo_2010.seek(0)
 				m = start_pos[k]
-				cursor = i		
-				i += 60 * num_of_cds[k]
-				demo_2000_parse(i, cursor, v, reader_old)
+				cursor = startings[k]
+				demo_2000_parse(cursor, v, reader_old, k)
 				demo_2010_parse(reader_new, v, k, m)
 				demo_2010_aux_parse(k, v, m)
-				print "IN DEMOGRAPHIC INFO\n"
 				print k
 				print v
 			#Add the 2010 info
@@ -210,6 +225,7 @@ def edu_2000_parse(reader):
 
 def comma_int(str_to_int):
 	h = str_to_int.replace('+', "")
+	h = h.replace('$', "")
 	h = h.replace(',', "")
 	return int(h)
 
@@ -219,7 +235,7 @@ def edu_2000_helper(dictionary, row):
 		cd = comma_int(row[0].split()[2])
 	else:
 		cd = comma_int(row[0].split()[1])
-	dictionary[cd].append(row[1])
+	dictionary[cd].append(comma_int(row[1]))
 	dictionary[cd].append(sum([comma_int(row[2]), comma_int(row[3]), comma_int(row[4]), comma_int(row[5])]))
 	dictionary[cd].append(sum([comma_int(row[6]), comma_int(row[7]), comma_int(row[8]), comma_int(row[9])]))
 	dictionary[cd].append(comma_int(row[11]))
@@ -443,21 +459,26 @@ def add_moving_info(file2000, file2010):
 
 def rent_2000_parse(reader):
 	for row in reader:
-		if(row[0].find("Bronx") > 0):
-			moving_2000_helper(bnx_cd_info, row)
-		elif row[0].find("Brooklyn") > 0:
-			moving_2000_helper(brk_cd_info, row)
-		elif row[0].find("Manhattan") > 0:
-			moving_2000_helper(mnh_cd_info, row)
-		elif row[0].find("Queens") > 0:
-			moving_2000_helper(qun_cd_info, row)
-		elif row[0].find("Staten Island") > 0:
-			moving_2000_helper(si_cd_info, row)
+		if(row[0].find("Bronx") >= 0):
+			rent_2000_helper(bnx_cd_info, row)
+		elif row[0].find("Brooklyn") >= 0:
+			rent_2000_helper(brk_cd_info, row)
+		elif row[0].find("Manhattan") >= 0:
+			rent_2000_helper(mnh_cd_info, row)
+		elif row[0].find("Queens") >= 0:
+			rent_2000_helper(qun_cd_info, row)
+		elif row[0].find("Staten Isl") >= 0:
+			rent_2000_helper(si_cd_info, row)
 
 def rent_2000_helper(dictionary, row):
 	#add value before rent
-	cd = row[0].split("\s")[1]
-	dictionary[cd].append(row[22])
+	print row
+	cd = row[0].split()
+	if len(cd) > 2:
+		cd = comma_int(row[0].split()[2])
+	else:
+		cd = comma_int(row[0].split()[1])
+	dictionary[cd].append(comma_int(row[22]))
 
 def rent_2010_parse(reader, dictionary, cd_tag, start_pos):
 	MEDIAN_VALUE = 106
@@ -487,6 +508,7 @@ def add_rent_info(file2000, file2010):
 				print "IN RENT"
 				print k
 				print v
+
 def write_csv():
 	columns = ["community_district", "gentrificiation_index(pct_change)", "gentrificiation_index(slope)"]
 	with open(the_strings.WRITE_FILE, 'wb') as f:
@@ -498,23 +520,25 @@ def write_csv():
 			print k
 			gentrification_index(writer, k, v)
 
+def write_calcuation_csv():
+	columns = []
+
 def gentrification_index(writer, k, v):
 	borough = names_of_boroughs[k]
 
 	for key in v:
 		data = v[key]
-		print len(data)
 		index_pct = 0
 		index_slope = 0
 
 		#1. Population Scores
-		index_pct += index(pct_change(data[8], data[2]), the_constants.PCT_CHANGE_BLACK)
-		index_pct += index(pct_change(data[7], data[1]), the_constants.PCT_CHANGE_WHITE)
-		index_pct += index(pct_change(data[9], data[3]), the_constants.PCT_CHANGE_HISPANIC)
+		index_pct += -1 * index(pct_change(data[8]/float(data[6]), data[2]/float(data[0])), the_constants.PCT_CHANGE_BLACK)
+		index_pct += index(pct_change(data[7]/float(data[6]), data[1]/float(data[0])), the_constants.PCT_CHANGE_WHITE)
+		#index_pct += index(pct_change(data[9], data[3]), the_constants.PCT_CHANGE_HISPANIC)
 
 		index_slope += index(slope(data[8], data[2]), the_constants.SLOPE_BLACK)
 		index_slope += index(slope(data[7], data[1]), the_constants.SLOPE_WHITE)
-		index_slope += index(slope(data[9], data[3]), the_constants.SLOPE_HISPANIC)
+		#index_slope += index(slope(data[9], data[3]), the_constants.SLOPE_HISPANIC)
 
 		#2. Education Scores
 		X1_old = (data[16] + data[17]) / (data[14] + float(data[13]))
@@ -527,6 +551,9 @@ def gentrification_index(writer, k, v):
 		O1_new = data[27] / float(data[26])
 		index_pct += index(pct_change(O1_new, O1_old), the_constants.PCT_CHANGE_EMPLOYMENT)
 		index_slope += index(slope(O1_new, O1_old), the_constants.SLOPE_EMPLOYMENT)
+
+		index_pct += index(pct_change(float(data[29]), data[25]), the_constants.PCT_CHANGE_PCI)
+		index_slope += index(slope(float(data[29]), float(data[25])), the_constants.SLOPE_PCI)
 
 		#4. Housing Built
 		H1_old = sum([data[31], data[32], data[33]]) / float(data[31])
@@ -541,13 +568,11 @@ def gentrification_index(writer, k, v):
 		index_slope += index(slope(M1_new, M1_old), the_constants.SLOPE_MOVING)
 
 		#6. Rent Score
-		index_pct += index(pct_change(data[44], data[43]), the_constants.PCT_CHANGE_RENT)
-		index_slope += index(slope(data[44], data[43]), the_constants.SLOPE_RENT)
+		index_pct += index(pct_change(float(data[45]), float(data[43])), the_constants.PCT_CHANGE_RENT)
+		index_slope += index(slope(float(data[45]), float(data[43])), the_constants.SLOPE_RENT)
 
 		#Write the row
 		writer.writerow([borough + " " + str(key), str(index_pct), str(index_slope)])
-
-
 
 def main():
 	# run main here

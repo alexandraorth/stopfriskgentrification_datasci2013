@@ -17,7 +17,7 @@ HOUSING_NEW = BASE + "housing_2010.csv"
 MOVING_OLD = BASE + "moved_in_five_years_prior_2000.csv"
 MOVING_NEW = BASE + "housing_2010.csv"
 
-RENT_VALUE_OLD = BASE + "housing_value_2000.csv"
+RENT_VALUE_OLD = BASE + "rent_2000.csv"
 RENT_VALUE_NEW = BASE + "housing_2010.csv"
 
 WRITE_FILE = BASE + "gentrification.csv"
