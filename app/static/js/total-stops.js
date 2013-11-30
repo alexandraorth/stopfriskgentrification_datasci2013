@@ -73,7 +73,7 @@ $(document).ready(function(){
         function redraw(){
             data.forEach(function(d){ if(d.year === years[i]) rateById[d.id] = + d.count;});
             
-            d3.select("p").text(years[i]);
+            d3.select("#total-stops-years").text(years[i]);
 
             svg.selectAll("#districts")
                 .style("fill", function(d, i){return color(rateById[ids[i]])});

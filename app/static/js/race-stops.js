@@ -75,7 +75,7 @@ $(document).ready(function(){
         function redraw(){
             data.forEach(function(d){ if(d.race === races[i]){rateById[d.addrpct] = +d.count;}});
             
-            d3.select("p").text(race_name[i]);
+            d3.select("#race-stops-years").text(race_name[i]);
             console.log(rateById)
 
             svg.selectAll("#districts")
