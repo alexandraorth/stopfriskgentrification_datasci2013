@@ -99,7 +99,7 @@ $(document).ready(function(){
 
         
             
-       // setInterval(function() {redraw();}, 2000);
+        setInterval(function() {redraw();}, 2000);
 
         function redraw(){
             data.forEach(function(d){ 
@@ -110,7 +110,6 @@ $(document).ready(function(){
             });
             
             d3.select("#race-stops-years").text(race_name[i]);
-            //console.log(rateById)
 
             svg.selectAll("#districts")
                 .style("fill", function(d, i){return color(rateById[ids[i]])});
