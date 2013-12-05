@@ -1,29 +1,91 @@
-<html>
-<head>
-	<link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="static/css/style.css" rel="stylesheet"/>
-</head>
-
-<body>
-	<div class="masthead">
-        	<h3 class="text-muted">Project name</h3>
-        	<ul class="nav nav-justified">
-          		<li class="active"><a href="#">Home</a></li>
-          		<li><a href="#">About</a></li>
-          		<li><a href="#">Graphs</a></li>
-          		<li><a href="#">Downloads</a></li>
-          		<li><a href="#">Contact</a></li>
-          		<li><a href="#">Twerk Team</a></li>
-        	</ul>
+<!DOCTYPE html>
+    <title>Stop, Frisk, and Gentrify</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="/static/css/bootswatch.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <body>
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="/" class="navbar-brand">Stop and Frisk: Ammunition for Gentrification?</a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="#about">About</a>
+            </li>
+            <li>
+              <a href="#findings">Findings</a>
+            </li>
+            <li>
+              <a href="#conclusion">Conclusion</a>
+            </li>
+            <li>
+              <a href="#source">Source</a>
+            </li>
+        </div>
       </div>
+    </div>
 
-	<div class="jumbotron">
-		<h1> Gentrifrisk </h1>
-		<p class="lead"> Because we still sort of need a title. Some pretty charts will go here. </p>
-		<p><a class="btn btn-primary" href="#"> Check out some of the correlations we have</a></p>
-	</div>
 
-	<script src="static/bootstrap/js/bootstrap.min.js" />
-	<script src="static/js/scripts.js" />
-</body>
+    <div class="container">
+
+      <div class="page-header" id="banner">
+        <div class="row">
+          <div>
+            <h1>Stop and Frisk: Ammunition for Gentrification?</h1>
+            <p class="lead">A data driven investigation of Stop and Frisk and Gentrification in New York City</p>
+          </div>
+          <section id="about">
+            <p>Cupcake ipsum dolor sit amet sweet sesame snaps applicake. Topping wafer I love caramels I love donut jujubes gummies muffin. Tart I love jelly I love I love cake. Jelly chocolate bar gummi bears. Sweet roll dragée topping I love caramels oat cake tiramisu. Cotton candy donut bear claw. Macaroon sweet roll tootsie roll cupcake candy I love soufflé pudding.</p>
+          </section>
+          <section id="findings">
+            <h2> Findings</h2>
+            <p>Cupcake ipsum dolor sit amet chocolate powder. Cotton candy candy canes jelly-o candy canes danish tootsie roll bonbon chocolate bar. Jelly caramels bonbon chocolate cake brownie chupa chups gingerbread cheesecake. Tiramisu lollipop carrot cake apple pie topping tart candy sweet roll caramels.</p>
+            <div id="total-stops-years"></div>
+            <div id="total-stops-map" class="map"></div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default">Gentrification</button>
+              <button type="button" class="btn btn-default">Stop-and-Frisk</button>
+            </div>
+            <caption><b>Total stops</b></caption>
+            <div id="race-stops-years"></div>
+            <div id="race-stops-map" class="map"></div>
+            <caption><b>Race stops</b></caption>
+
+
+            <div id="race-tooltips-map" class="map"></div>
+          </section>
+          <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>Cupcake ipsum dolor sit amet chocolate powder. Cotton candy candy canes jelly-o candy canes danish tootsie roll bonbon chocolate bar. Jelly caramels bonbon chocolate cake brownie chupa chups gingerbread cheesecake. Tiramisu lollipop carrot cake apple pie topping tart candy sweet roll caramels. Marshmallow icing soufflé tart macaroon jelly beans sweet. Bear claw pie biscuit jujubes wafer I love. Dragée cake candy. Topping sweet roll cheesecake fruitcake jujubes marzipan tiramisu. Cake toffee dragée gummies. Gummi bears pie icing ice cream I love jujubes.</p>
+          </section>
+          <section id="source">
+            <h2>Source</h2>
+            <p><img id="octocat" src="/static/images/labtocat.png"></img> </p>
+            <p> Want to check out our code? Want to contribute to the project? Find us on <a href="https://github.com/alexandraorth/data_science_2013">Github</a></p>
+          </section>
+        </div>
+      </div>
+      <div id="tooltip" class="hidden">
+        <p><strong>Important Label Heading</strong></p>
+        <p><span id="value">100</span>%</p>
+      </div>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> 
+      <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
+      <script src="http://d3js.org/queue.v1.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>  
+      <script src="/static/js/tooltip.js"></script>
+      <script src="/static/js/race-stops.js"></script>
+      <!--<script src="/static/js/race-tooltips.js"></script>-->
+      <script src="/static/js/total-stops.js"></script>
+
+  </body>
 </html>
