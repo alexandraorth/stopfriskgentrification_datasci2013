@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/css/bootstrap.css" media="screen">
     <link rel="stylesheet" href="/static/css/bootswatch.min.css">
-    <body style="">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <body>
     <div class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <a href="/" class="navbar-brand">Stop, Frisk, and Gentrify</a>
+          <a href="/" class="navbar-brand">Stop and Frisk: Ammunition for Gentrification?</a>
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -26,9 +27,6 @@
             <li>
               <a href="#conclusion">Conclusion</a>
             </li>
-             <li>
-              <a href="#team">Team</a>
-            </li>
             <li>
               <a href="#source">Source</a>
             </li>
@@ -41,42 +39,53 @@
 
       <div class="page-header" id="banner">
         <div class="row">
-          <div class="col-lg-6">
-            <h1>Stop and Frisk: A Weapon for Gentrification?</h1>
+          <div>
+            <h1>Stop and Frisk: Ammunition for Gentrification?</h1>
             <p class="lead">A data driven investigation of Stop and Frisk and Gentrification in New York City</p>
           </div>
-          <section id="about" class="col-lg-6">
+          <section id="about">
             <p>Cupcake ipsum dolor sit amet sweet sesame snaps applicake. Topping wafer I love caramels I love donut jujubes gummies muffin. Tart I love jelly I love I love cake. Jelly chocolate bar gummi bears. Sweet roll dragée topping I love caramels oat cake tiramisu. Cotton candy donut bear claw. Macaroon sweet roll tootsie roll cupcake candy I love soufflé pudding.</p>
           </section>
-          <section id="findings" class="col-lg-6">
+          <section id="findings">
             <h2> Findings</h2>
             <p>Cupcake ipsum dolor sit amet chocolate powder. Cotton candy candy canes jelly-o candy canes danish tootsie roll bonbon chocolate bar. Jelly caramels bonbon chocolate cake brownie chupa chups gingerbread cheesecake. Tiramisu lollipop carrot cake apple pie topping tart candy sweet roll caramels.</p>
             <div id="total-stops-years"></div>
             <div id="total-stops-map" class="map"></div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default">Gentrification</button>
+              <button type="button" class="btn btn-default">Stop-and-Frisk</button>
+            </div>
             <caption><b>Total stops</b></caption>
             <div id="race-stops-years"></div>
             <div id="race-stops-map" class="map"></div>
             <caption><b>Race stops</b></caption>
+
+
+            <div id="race-tooltips-map" class="map"></div>
           </section>
-          <section id="conclusion" class="col-lg-6">
+          <section id="conclusion">
             <h2>Conclusion</h2>
             <p>Cupcake ipsum dolor sit amet chocolate powder. Cotton candy candy canes jelly-o candy canes danish tootsie roll bonbon chocolate bar. Jelly caramels bonbon chocolate cake brownie chupa chups gingerbread cheesecake. Tiramisu lollipop carrot cake apple pie topping tart candy sweet roll caramels. Marshmallow icing soufflé tart macaroon jelly beans sweet. Bear claw pie biscuit jujubes wafer I love. Dragée cake candy. Topping sweet roll cheesecake fruitcake jujubes marzipan tiramisu. Cake toffee dragée gummies. Gummi bears pie icing ice cream I love jujubes.</p>
           </section>
-          <section id="team" class="col-lg-6">
-            <h2>Team</h2>
-            <p>Team pics, etc.? </p>
-          </section>
-          <section id="source" class="col-lg-6">
+          <section id="source">
             <h2>Source</h2>
-            <p>link to the githubs? </p>
+            <p><img id="octocat" src="/static/images/labtocat.png"></img> </p>
+            <p> Want to check out our code? Want to contribute to the project? Find us on <a href="https://github.com/alexandraorth/data_science_2013">Github</a></p>
           </section>
         </div>
+      </div>
+      <div id="tooltip" class="hidden">
+        <p><strong>Important Label Heading</strong></p>
+        <p><span id="value">100</span>%</p>
       </div>
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> 
       <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
       <script src="http://d3js.org/queue.v1.min.js"></script>
-      <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>     
+      <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>  
+      <script src="/static/js/tooltip.js"></script>
       <script src="/static/js/race-stops.js"></script>
+      <!--<script src="/static/js/race-tooltips.js"></script>-->
       <script src="/static/js/total-stops.js"></script>
+
   </body>
 </html>

@@ -1,15 +1,14 @@
 $(document).ready(function(){
 
-    function tooltip_text(data){
+    function tooltip_text(addrpct, data){
         /*TODO: add gentrification scores when given*/
-        var race = data.race;
-        var district = data.district;
+        var district = addrpct;
         var white = data.W;
         var asian = data.A;
         var native_american = data.I;
         var black = data.B;
         var hispanic = data.P;
-        return "<p>District:"+district+"</p><p>Black:"+black+"<p>White:"+count+"</p><p>Asian:"+asian+"<p>Native American:"+native_american+"</p><p>White- Hispanic:"+hispanic;
+        return "<div id='tooltip'><p>District:"+district+"</p><p>Black:"+black+"<p>White:"+white+"</p><p>Asian:"+asian+"<p>Native American:"+native_american+"</p><p>White-Hispanic:"+hispanic+"</p></div>";
 
     }
     var width = 600,
@@ -62,7 +61,7 @@ $(document).ready(function(){
         var path = d3.geo.path()
             .projection(projection);
 
-        var svg = d3.select("#race-stops-map").append("svg")
+        var svg = d3.select("#race-tooltips-map").append("svg")
             .attr("width", width)
             .attr("height", height);
 
@@ -72,7 +71,11 @@ $(document).ready(function(){
             .attr("id", "districts")
             .attr("class", function(d,i){ return ids[i]; })
             .attr("d", path)
-        
+            .on("mouseover", function(d,i){
+    
+                tooltip.html(data[i].tooltip_text);return tooltip.style("visibility", "visible");})
+            .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+            .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
         var legend = svg.selectAll("g.legend")
             .data(color_domain)
@@ -97,25 +100,20 @@ $(document).ready(function(){
         redraw();        
 
 
-        
+        data.forEach(function(d){ 
+                
+        });
             
        // setInterval(function() {redraw();}, 2000);
 
         function redraw(){
             data.forEach(function(d){ 
-                if(d.race === races[i]){
-                    rateById[d.addrpct] = +d.count;
-                }
-
-            });
-            
-            d3.select("#race-stops-years").text(race_name[i]);
-            //console.log(rateById)
-
-            svg.selectAll("#districts")
-                .style("fill", function(d, i){return color(rateById[ids[i]])});
-            // increment i for race
-            i++;
-        };
-    };
+                console.log(d.addrpct)
+                precint = d.addrpct;
+                console.log(stops_per_race[precint])
+                d.tooltip_text = tooltip_text(precint,stops_per_race[precint]);
+            })
+        }
+    }
+    
 });
