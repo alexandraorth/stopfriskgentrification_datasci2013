@@ -1,10 +1,7 @@
 $(document).ready(function(){
-    var width = 700,
-    height = 800;
+    var width = 700, height = 800;
 
     var ids = [35, 46, 20, 15, 32, 17, 29, 6, 5, 24, 57, 59, 30, 41, 48, 37, 36, 18, 55, 23, 18, 48, 31, 34, 38, 53, 21, 49, 8, 56, 56, 46, 14, 33, 2, 1, 55, 55, 58, 59, 12, 9, 3, 26, 51, 52, 39, 42, 45, 19, 20, 7, 7, 16, 4, 4, 40, 50, 54, 44, 47, 27, 25, 28, 10, 43, 43, 22, 22, 11, 13];
-
-    // var race_name = ["Black", "White", "Asian/Pacific Islander", "American Indian/Alaskan Native", "Black-Hispanic", "White-Hispanic"];
 
     var legend_labels = ['-6', '-4', '-2', '0', '2', '4', '6'];
 
@@ -35,12 +32,12 @@ $(document).ready(function(){
         var path = d3.geo.path()
             .projection(projection);
 
-        var svg = d3.select("#map").append("svg")
+        var svg = d3.select("#race-stops-map").append("svg")
             .attr("width", width)
             .attr("height", height);
 
         var div = d3.select("body").append("div")   
-            .attr("class", "tooltip")               
+            .attr("id", "tooltip")               
             .style("opacity", 0);
 
         svg.selectAll(".districts")
@@ -49,6 +46,19 @@ $(document).ready(function(){
             .attr("id", "districts")
             .attr("class", function(d,i){ return ids[i]; })
             .attr("d", path)
+            .on("mouseover", function(d,i) {      
+                div.transition()        
+                    .duration(200)      
+                    .style("opacity", .9);      
+                div .html("<p><strong>"+ dnames[i] +"</strong></p><p>Gentrification Index: <span id='value'>" + rateById[i] + "</span></p>")
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");    
+            })
+            .on("mouseout", function(d) {       
+                div.transition()        
+                .duration(500)      
+                .style("opacity", 0);   
+            });
 
         var legend = svg.selectAll("g.legend")
             .data(color_domain)
@@ -81,6 +91,8 @@ $(document).ready(function(){
                 });
             })
             
+            // d3.select("p").text(years[i]);
+
             svg.selectAll("#districts")
                 .style("fill", function(d, i){return color(rateById[i])});
         };

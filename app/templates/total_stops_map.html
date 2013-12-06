@@ -31,6 +31,34 @@
         margin: 0;
         z-index: 20;
     }
+    #tooltip {
+        position: absolute;
+        width: 200px;
+        height: auto;
+        padding: 10px;
+        font-size: 10px;
+        background-color: white;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+        z-index:5;
+    }
+
+    #tooltip.hidden {
+            display: none;
+    }
+
+    #tooltip p {
+            margin: 0;
+            font-family: sans-serif;
+            font-size: 10px;
+            line-height: 20px;
+            background-color: white;
+    }
 </style>
 
 
@@ -42,8 +70,9 @@
 
 <script type="text/javascript">
 
-var width = 700,
-height = 800;
+var dnames = ["Brooklyn District 11", "Bronx District 4", "0", "Bronx District 3", "Brooklyn District 8", "Bronx District 5", "Brooklyn District 5", "Manhattan District 6", "Manhattan District 5", "Bronx District 12", "Staten Island District 1", "0", "Brooklyn District 6", "Brooklyn District 17", "Bronx District 6", "Brooklyn District 13", "Brooklyn District 12", "Bronx District 6", "0", "Bronx District 11", "0", "0", "Brooklyn District 7", "Brooklyn District 10", "Brooklyn District 14", "Bronx District 11", "Bronx District 9", "Bronx District 7", "Manhattan District 8", "Bronx District 14", "0", "0", "Bronx District 2", "Brooklyn District 9", "Manhattan District 2", "Manhattan District 1", "Bronx District 13", "0", "Staten Island District 2", "Staten Island District 3", "Manhattan District 12", "Manhattan District 9", "Manhattan District 3", "Brooklyn District 2", "Bronx District 9", "Bronx District 10", "Brooklyn District 15", "Brooklyn District 18", "Bronx District 3", "Bronx District 7", "Bronx District 8", "Manhattan District 7", "0", "Bronx District 4", "0", "Manhattan District 4", "Brooklyn District 16", "Bronx District 8", "Bronx District 12", "Bronx District 2", "Bronx District 5", "Brooklyn District 3", "Brooklyn District 1", "Brooklyn District 4", "Manhattan District 10", "Bronx District 1", "0", "Bronx District 10", "0", "Manhattan District 11", "Bronx District 1"];
+
+var width = 700, height = 800;
 
 var ids = [35, 46, 20, 15, 32, 17, 29, 6, 5, 24, 57, 59, 30, 41, 48, 37, 36, 18, 55, 23, 18, 48, 31, 34, 38, 53, 21, 49, 8, 56, 56, 46, 14, 33, 2, 1, 55, 55, 58, 59, 12, 9, 3, 26, 51, 52, 39, 42, 45, 19, 20, 7, 7, 16, 4, 4, 40, 50, 54, 44, 47, 27, 25, 28, 10, 43, 43, 22, 22, 11, 13];
 
@@ -83,15 +112,30 @@ function ready(error, nyb, data){
         .attr("width", width)
         .attr("height", height);
 
+    var div = d3.select("body").append("div")   
+        .attr("id", "tooltip")               
+        .style("opacity", 0);
+
     svg.selectAll(".districts")
         .data(districts)
         .enter().append("path")
         .attr("id", "districts")
         .attr("class", function(d,i){ return ids[i]; })
         .attr("d", path)
-        .on("mouseover", function(d,i){
-            console.log(i + " " + ids[i] + " " + rateById[ids[i]])
+        .on("mouseover", function(d,i) {      
+            div.transition()        
+                .duration(200)      
+                .style("opacity", .9);      
+            div .html("<p><strong>"+ dnames[i] +"</strong></p><p>Total Number of Stops: <span id='value'>" + rateById[i] + "</span></p>")
+                .style("left", (d3.event.pageX) + "px")     
+                .style("top", (d3.event.pageY - 28) + "px");    
         })
+        .on("mouseout", function(d) {       
+            div.transition()        
+                .duration(500)      
+                .style("opacity", 0);   
+        });
+
 
     var legend = svg.selectAll("g.legend")
         .data(color_domain)
