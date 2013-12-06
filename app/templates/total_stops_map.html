@@ -36,37 +36,36 @@
 
 <body>
     <div id="total-stops-map">
-    <h1> Total Number of Stops </h1>
-    <p> 2005 </p>
     </div>
 </body>
 
 
 <script type="text/javascript">
 
-var width = 600,
-height = 450;
+var width = 700,
+height = 800;
 
-var ids = [1, 1,  1,  1,  77,  1, 1, 1, 1, 1, 1, 1 , 76, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 , 1, 1, 71, 1, 1, 1, 1, 1, 1, 1 , 1, 1, 84, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 79, 1, 83, 1, 1, 1, 1, 1, 1, 1];
+var ids = [35, 46, 20, 15, 32, 17, 29, 6, 5, 24, 57, 59, 30, 41, 48, 37, 36, 18, 55, 23, 18, 48, 31, 34, 38, 53, 21, 49, 8, 56, 56, 46, 14, 33, 2, 1, 55, 55, 58, 59, 12, 9, 3, 26, 51, 52, 39, 42, 45, 19, 20, 7, 7, 16, 4, 4, 40, 50, 54, 44, 47, 27, 25, 28, 10, 43, 43, 22, 22, 11, 13];
 
-var years = ["2005", "2006", "2007", "2008", "2009", "2010", "2011"];
+// var years = ["2005", "2006", "2007", "2008", "2009", "2010", "2011"];
 
-var legend_labels = ['< 100 stops', '>1000 stops', '> 3000 stops', '> 5000 stops', '> 7000 stops', '> 9000 stops', '> 11000 stops', '> 13000 stops', '> 18000 stops']
+var legend_labels = ['< 2000 stops', '> 2000 stops', '> 5000 stops', '> 10000 stops', '> 13000 stops', '> 17000 stops', '> 21000 stops', '> 25000 stops', '> 30000 stops']
 
-var color_domain = [100, 1000, 3000, 5000, 7000, 9000, 11000, 13000, 18000];
+var color_domain = [2000, 5000, 10000, 13000, 15000, 17000, 21000, 25000, 30000];
 
 var i = 0;
 
 var color = d3.scale.threshold()
-    .domain([100, 1000, 3000, 5000, 7000, 9000, 11000, 13000, 18000])
-    .range(["#e3e3e3", "#ffffd9", "#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]);
+    .domain([0, 2000, 5000, 10000, 13000, 17000, 21000, 25000, 30000])
+    .range(["#ffffff", "#f7fbff","#deebf7","#c6dbef","#9ecae1","#6baed6","#4292c6","#2171b5","#08519c","#08306b"]);
 
 queue()
     .defer(d3.json, "/static/data/comm_districts.json")
-    .defer(d3.csv, "/static/data/total_data.csv")
+    .defer(d3.csv, "/static/data/nonnormfinal.csv")
     .await(ready);
 
 function ready(error, nyb, data){
+    console.log(data);
     var rateById = {};
     rateById[1] = 0;
 
@@ -74,7 +73,7 @@ function ready(error, nyb, data){
 
     var projection = d3.geo.mercator()
         .center([-73.9411, 40.6833])
-        .scale(290000)
+        .scale(70000)
         .translate([(width) / 1.8, (height)/1.8]);
 
     var path = d3.geo.path()
@@ -90,6 +89,9 @@ function ready(error, nyb, data){
         .attr("id", "districts")
         .attr("class", function(d,i){ return ids[i]; })
         .attr("d", path)
+        .on("mouseover", function(d,i){
+            console.log(i + " " + ids[i] + " " + rateById[ids[i]])
+        })
 
     var legend = svg.selectAll("g.legend")
         .data(color_domain)
@@ -100,7 +102,7 @@ function ready(error, nyb, data){
 
     legend.append("rect")
         .attr("x", 20)
-        .attr("y", function(d, i){ return height - (i*ls_h) - 2*ls_h;})
+        .attr("y", function(d, i){ return (i*ls_h) + 2*ls_h;})
         .attr("width", ls_w)
         .attr("height", ls_h)
         .style("fill", function(d, i) { return color(d); })
@@ -108,21 +110,34 @@ function ready(error, nyb, data){
 
     legend.append("text")
         .attr("x", 50)
-        .attr("y", function(d, i){ return height - (i*ls_h) - ls_h - 4;})
+        .attr("y", function(d, i){ return (i*ls_h) + ls_h + 34;})
         .text(function(d, i){ return legend_labels[i]; });
 
     redraw();        
 
-    setInterval(function() {redraw();}, 2000);
+    // setInterval(function() {redraw();}, 2000);
 
     function redraw(){
-        data.forEach(function(d){ if(d.year === years[i]) rateById[d.id] = + d.count;});
+        ids.forEach(function(r,i){ 
+            data.forEach(function(d){
+                // console.log(i); 
+                // console.log(r);
+                if(parseInt(d.communitydistrict) === r){ 
+                    // console.log("whale")
+                    // console.log(d.total_stops)
+                    rateById[i] = +d.total_stops;
+                    console.log(r + " " + d.communitydistrict + " " + rateById[i])
+                    console.log(d)
+                }
+            });
+        })
         
-        d3.select("p").text(years[i]);
+        console.log(rateById)
+
+        // d3.select("p").text(years[i]);
 
         svg.selectAll("#districts")
-            .style("fill", function(d, i){return color(rateById[ids[i]])});
-        i++;
+            .style("fill", function(d, i){return color(rateById[i])});
     };
 };
 
