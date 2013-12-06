@@ -96,6 +96,11 @@ queue()
 function ready(error, nyb, data){
     console.log(data);
     var rateById = {};
+    var hisp = {};
+    var black = {};
+    var white = {};
+    var other = {};
+    var arr = {};
     rateById[1] = 0;
 
     var districts = topojson.feature(nyb, nyb.objects.places).features;
@@ -122,14 +127,21 @@ function ready(error, nyb, data){
         .attr("id", "districts")
         .attr("class", function(d,i){ return ids[i]; })
         .attr("d", path)
-        .on("mouseover", function(d,i) {      
-            div.transition()        
-                .duration(200)      
-                .style("opacity", .9);      
-            div .html("<p><strong>"+ dnames[i] +"</strong></p><p>Total Number of Stops: <span id='value'>" + rateById[i] + "</span></p>")
-                .style("left", (d3.event.pageX) + "px")     
-                .style("top", (d3.event.pageY - 28) + "px");    
-        })
+            .on("mouseover", function(d,i) { 
+
+                div.transition()        
+                    .duration(200)      
+                    .style("opacity", .9);      
+                div .html("<p><strong>"+ dnames[i] +"</strong></p>" +
+                    "<p>Total Number of Stops: <span id='value'>" + rateById[i] + "</span></p>" +
+                    "<p>Black Stopped <span id='value'>" + ((black[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" +
+                    "<p>White Stopped: <span id='value'>" + ((white[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" + 
+                    "<p>Hispanic Stopped: <span id='value'>" +(( hisp[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" +
+                    "<p>Other Stopped: <span id='value'>" + ((other[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" + 
+                    "<p>Arrested: <span id='value'>" + ((arr[i]/rateById[i])*100).toFixed(2) + "</span>%</p>")
+                    .style("left", (d3.event.pageX) + "px")    
+                    .style("top", (d3.event.pageY - 28) + "px");    
+            })
         .on("mouseout", function(d) {       
             div.transition()        
                 .duration(500)      
@@ -170,6 +182,11 @@ function ready(error, nyb, data){
                     // console.log("whale")
                     // console.log(d.total_stops)
                     rateById[i] = +d.total_stops;
+                    hisp[i] = +d.stops_hispanic;
+                    black[i] = +d.stops_black;
+                    white[i] = +d.stops_white;
+                    arr[i] = +d.total_arrests;
+                    other[i] = +d.stops_other;
                     console.log(r + " " + d.communitydistrict + " " + rateById[i])
                     console.log(d)
                 }
