@@ -1,50 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title> Line Graph Presenting Correlations Between Stop+Frisk and Gentrification </title>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> 
-	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>    
-</head>
-
-<style>
-
-	svg{
-		fill: #EEEEEE;
-	}
-	path {
-		fill: #CED8B6;
-	}
-
-	line {
-		stroke: #555;
-		stroke-width: 2px;
-	}
-
-	.bestfit {
-		stroke: #ddd;
-		stroke-width: 10px;
-	}
-
-	#xAxis path, #yAxis path, #xAxis line, #yAxis line {
-		stroke-width: 2px;
-		stroke: #ccc;
-		fill: #fff;
-		shape-rendering: crispEdges;
-	}
-
-	text {
-		font-size: 12px;
-		fill: #888;
-	}
-
-</style>
-
-<body>
-</body>
-
-<script>
+$(document).ready(function(){
 
 	var xdata = [-6, -4, -2, 0, 2, 4];
 	var ydata = [0.00226885533333333, 0.00441588688888889, 0.0049220924, 0.0051748516, 0.00764690355555556, 0.00703680057142857];
@@ -52,16 +6,16 @@
 	var ratio = [0.287474082205147, 0.0523345305284761, 0.118375433382863, 0.930062943350984, 0.630132804152038, 0.555132134868694];
 	var pointColour = d3.scale.category20b();
 
-	var width = 1000;
-	var height = 640;
+	var width = 900;
+	var height = 500;
 
 	var y = d3.scale.linear()
 		.domain([d3.min(ydata), d3.max(ydata)])
-		.range([ 600, 100]);
+		.range([ height-40, 100]);
 
 	var x = d3.scale.linear()
 		.domain([d3.min(xdata) -1, d3.max(xdata) +1])  // the range of the values to plot
-		.range([ 20, 780 ]);
+		.range([ 20, width-150 ]);
 
 	var svg = d3.select("body")
 		.append("svg")
@@ -73,7 +27,7 @@
 		.orient('bottom');
 
 	svg.append('g')
-		.attr('transform', 'translate(25,620)')
+		.attr('transform', 'translate(25,' + height + ')')
 		.attr('id', 'xAxis')
 		.call(xAxis);
 
@@ -106,5 +60,4 @@
 	   	return Math.sqrt(ratio[i]*600);
 	   });
 
-</script>
-</html>
+	});

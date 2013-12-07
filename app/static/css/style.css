@@ -4,10 +4,10 @@
 
 #tooltip {
         position: absolute;
-        width: 200px;
+        width: 180px;
         height: auto;
         padding: 10px;
-        font-size: 10px;
+        font-size: 12px;
         background-color: white;
         -webkit-border-radius: 10px;
         -moz-border-radius: 10px;
@@ -28,4 +28,33 @@
         font-size: 10px;
         line-height: 20px;
         background-color: white;
+}
+
+svg{
+        fill: #EEEEEE;
+}
+path {
+        fill: #CED8B6;
+}
+
+line {
+        stroke: #555;
+        stroke-width: 2px;
+}
+
+.bestfit {
+        stroke: #ddd;
+        stroke-width: 10px;
+}
+
+#xAxis path, #yAxis path, #xAxis line, #yAxis line {
+        stroke-width: 2px;
+        stroke: #ccc;
+        fill: #fff;
+        shape-rendering: crispEdges;
+}
+
+text {
+        font-size: 12px;
+        fill: #888;
 }
