@@ -17,7 +17,7 @@ $(document).ready(function(){
 		.domain([d3.min(xdata) -1, d3.max(xdata) +1])  // the range of the values to plot
 		.range([ 20, width-150 ]);
 
-	var svg = d3.select("body")
+	var svg = d3.select("#line-graph")
 		.append("svg")
 		.attr('width', width + 50)
 		.attr('height', height + 50);
@@ -30,6 +30,19 @@ $(document).ready(function(){
 		.attr('transform', 'translate(25,' + height + ')')
 		.attr('id', 'xAxis')
 		.call(xAxis);
+
+	svg.append("text")      // text label for the x axis
+        .attr("x", width/2 )
+        .attr("y",  height + 40 )
+        .text("Gentrification Index");
+
+        svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - 10)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Value");
 
 	var yAxis = d3.svg.axis()
 		.scale(y)

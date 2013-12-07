@@ -107,25 +107,17 @@ $(document).ready(function(){
         function redraw(){
             ids.forEach(function(r,i){ 
                 data.forEach(function(d){
-                    // console.log(i); 
-                    // console.log(r);
                     if(parseInt(d.communitydistrict) === r){ 
-                        // console.log("whale")
-                        // console.log(d.total_stops)
                         rateById[i] = +d.total_stops;
                         hisp[i] = +d.stops_hispanic;
                         black[i] = +d.stops_black;
                         white[i] = +d.stops_white;
                         arr[i] = +d.total_arrests;
                         other[i] = +d.stops_other;
-                        console.log(r + " " + d.communitydistrict + " " + rateById[i])
-                        console.log(d)
                     }
                 });
             })
             
-            console.log(rateById)
-
             // d3.select("p").text(years[i]);
 
             svg.selectAll("#districts")
