@@ -81,3 +81,7 @@ text {
 .bold{
         font-weight:bold;
 }
+
+#line-graph{
+        text-align:center;
+}
