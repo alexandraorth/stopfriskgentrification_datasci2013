@@ -1,1 +1,1 @@
-web: gunicorn run-heroku:app
+web: venv/bin/gunicorn run-heroku:app
