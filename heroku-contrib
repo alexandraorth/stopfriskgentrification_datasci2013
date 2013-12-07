@@ -1,0 +1,5 @@
+git add .
+git commit -m "AUTOMATED HEROKU CONTRIBUTION JOYRIDE."
+git push origin master
+git push heroku master
+heroku ps:scale web=1
