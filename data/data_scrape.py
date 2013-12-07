@@ -71,7 +71,7 @@ def mnh_aux_parse(dictionary, start_pos, row):
 		dictionary[j].append(comma_int(row[start_pos + 4 * (j-3)]))
 
 def demo_2000_parse(cursor, dictionary, reader, key):
-	BOOBS = 0
+	BEGINNING = 0
 	POPULATION_TOTAL_LINE = 2
 	POPULATION_WHITE_NONHISPANIC = 3
 	POPULATION_BLACK_NONHISPANIC = 4
@@ -94,7 +94,7 @@ def demo_2000_parse(cursor, dictionary, reader, key):
 		row = reader.next()
 		# print str(ctr) + " : "
 		# print row
-		if ctr % SKIP == BOOBS:
+		if ctr % SKIP == BEGINNING:
 			district += 1
 		elif ctr % SKIP == POPULATION_TOTAL_LINE:
 			print "ADDING STUFF FROM THIS ROW"
