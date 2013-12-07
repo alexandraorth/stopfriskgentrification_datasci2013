@@ -17,7 +17,7 @@ $(document).ready(function(){
 
     var color = d3.scale.threshold()
         .domain([0, 2000, 5000, 10000, 13000, 17000, 21000, 25000, 30000])
-        .range(["#ffffff", "#f7fbff","#deebf7","#c6dbef","#9ecae1","#6baed6","#4292c6","#2171b5","#08519c","#08306b"]);
+        .range(["#f7fbff","#f7fbff","#deebf7","#c6dbef","#9ecae1","#6baed6","#4292c6","#2171b5","#08519c","#08306b"]);
 
     queue()
         .defer(d3.json, "/static/data/comm_districts.json")
@@ -38,7 +38,7 @@ $(document).ready(function(){
 
         var projection = d3.geo.mercator()
             .center([-73.9411, 40.6833])
-            .scale(70000)
+            .scale(75000)
             .translate([(width) / 1.8, (height)/1.8]);
 
         var path = d3.geo.path()
@@ -79,17 +79,22 @@ $(document).ready(function(){
                     .style("opacity", 0);   
             });
 
+        var ls_w = 20, ls_h = 20;
+
+        svg.append("text")
+        .attr("x", 20)
+        .attr("y", function(d, i){ return (i*ls_h) + 4*ls_h;})
+        .style("font-size", 25)
+        .text("Total Number of Stops")
 
         var legend = svg.selectAll("g.legend")
             .data(color_domain)
             .enter().append("g")
             .attr("class", "legend");
 
-        var ls_w = 20, ls_h = 20;
-
         legend.append("rect")
             .attr("x", 20)
-            .attr("y", function(d, i){ return (i*ls_h) + 2*ls_h;})
+            .attr("y", function(d, i){ return (i*ls_h) + 5*ls_h;})
             .attr("width", ls_w)
             .attr("height", ls_h)
             .style("fill", function(d, i) { return color(d); })
@@ -97,7 +102,7 @@ $(document).ready(function(){
 
         legend.append("text")
             .attr("x", 50)
-            .attr("y", function(d, i){ return (i*ls_h) + ls_h + 34;})
+            .attr("y", function(d, i){ return (i*ls_h) + ls_h + 95;})
             .text(function(d, i){ return legend_labels[i]; });
 
         redraw();        
