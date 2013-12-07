@@ -21,3 +21,5 @@ RENT_VALUE_OLD = BASE + "rent_2000.csv"
 RENT_VALUE_NEW = BASE + "housing_2010.csv"
 
 WRITE_FILE = BASE + "gentrification.csv"
+POPULATION_FILE = BASE + "population_in_2010.csv"
+CALC_FILE = BASE + "calculations.csv"

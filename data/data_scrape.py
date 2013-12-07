@@ -309,6 +309,19 @@ def add_occ_2000_parse(reader, key, start_pos):
 				dictionary[j].append(comma_int(row[start_pos + (j-1)]))
 		i += 1
 
+def add_occ_2000_aux_parse(cd_tag, dictionary):
+	start_positions = {"BNX": 7, "BRK":20, "MNH":39, "QUN":52, "SI":67}
+	with open('csv_files/med_house_income_2000.csv', 'rb') as f:
+		reader = csv.reader(f)
+		i = 0
+		j = 1
+		while i <= start_positions[cd_tag] + num_of_cds[cd_tag] -1:
+			row = reader.next()
+			if i >= start_positions[cd_tag]:
+				dictionary[j].append(comma_int(row[18]))
+				j += 1
+			i += 1
+
 
 def add_occ_2010_parse(reader, dictionary, cd_tag, start_pos):
 	TOTAL_EMPLOYMENT = 8
@@ -340,6 +353,7 @@ def add_occ_income_info(file2000, file2010):
 				occ_income_2000.seek(0)
 				occ_income_2010.seek(0)
 				add_occ_2000_parse(reader_old, k, start_positions[k])
+				add_occ_2000_aux_parse(k,v) #adds the median house income
 				add_occ_2010_parse(reader_new, v, k, start_pos[k])
 				print "IN ADD_OCC_INCOME INFO"
 				print k
@@ -511,19 +525,221 @@ def add_rent_info(file2000, file2010):
 
 def write_csv():
 	columns = ["community_district", "gentrificiation_index(pct_change)", "gentrificiation_index(slope)"]
+	calc_columns = ["borough", "pct_change_black", "pct_change_white", "pct_change_renters", "pct_change_education", "pct_change_employment"]
+	calc_columns.extend(["pct_change_pci", "pct_change_income", "pct_change_housing", "pct_change_moving", "pct_change_rent"])
 	with open(the_strings.WRITE_FILE, 'wb') as f:
+		writer = csv.writer(f, delimiter=',')
+		with open(the_strings.CALC_FILE, 'wb ') as cf:
+			calc_writer = csv.writer(cf, delimiter=',')
+			writer.writerow(columns)
+			calc_writer.writerow(calc_columns)
+
+			for k,v in cd_info.iteritems():			
+				print "\n\n\n\nWRITING CSV\n\n\n"
+				print k
+				gentrification_index(writer, k, v)
+				write_calculation_csv(calc_writer, k, v)
+
+def write_population_csv():
+	columns = ["community_district", "population_in_2010"]
+	with open(the_strings.POPULATION_FILE, 'wb') as f:
 		writer = csv.writer(f, delimiter=',')
 		writer.writerow(columns)
 
-		for k,v in cd_info.iteritems():			
-			print "\n\n\n\nWRITING CSV\n\n\n"
-			print k
-			gentrification_index(writer, k, v)
+		for k,v in cd_info.iteritems():
+			borough = names_of_boroughs[k]
+			for l,m in v.iteritems():
+				name = borough + str(l)
+				population = m[6]
+				row = [name, population]
+				writer.writerow(row)
 
-def write_calcuation_csv():
-	columns = []
+def get_combined_info(a,b):
+	c = []
+	for m,n in zip(a,b):
+		if m != n:
+			c.append(m + n)
+		else:
+			c.append(m)
+	return c
+
+def write_calculation_csv(writer, k, v):
+	borough = names_of_boroughs[k]
+
+	if k == "BNX" or k == "MNH":
+		special_calc_write(writer, k, v)
+
+	for key in v:
+		data = v[key]
+		row = []
+		row.append(borough + " " + str(key))
+		row.append(pct_change(data[8]/float(data[6]), data[2]/float(data[0])))
+		row.append(pct_change(data[7]/float(data[6]), data[1]/float(data[0])))
+
+		X1_old = (data[16] + data[17]) / (data[14] + float(data[13]))
+		X1_new = (data[22] + data[21]) / (data[19] + float(data[18]))
+		row.append(pct_change(data[10], data[4]))
+		row.append(pct_change(X1_new, X1_old))
+
+		O1_old = data[24] / float(data[23])
+		O1_new = data[28] / float(data[26])
+		row.append(pct_change(O1_new, O1_old))
+
+		row.append(pct_change(float(data[30]), data[25]))
+		row.append(pct_change(float(data[27]), data[31]))
+
+		H1_old = sum([data[32], data[34], data[35]]) / float(data[32])
+		H1_new = (data[36] + data[37]) / float(data[35])
+		row.append(pct_change(H1_new, H1_old))
+
+		M1_old = (data[39] + data[40]) / float(data[38])
+		M1_new = (data[42] + data[43]) / float(data[41])
+		row.append(pct_change(M1_new, M1_old))
+		row.append(pct_change(float(data[46]), float(data[44])))
+
+		writer.writerow(row)
+
+def special_calc_write(writer, k, v):
+	if k == "BNX":
+		#write using BNX rules
+		bnx_1_2 = get_combined_info(v[1], v[2])
+		bnx_3_6 = get_combined_info(v[3], v[6])
+
+		writer.writerow(special_calcs(bnx_1_2, k, "1&2"))
+		writer.writerow(special_calcs(bnx_3_6, k, "3&6"))
+		writer.writerow(special_calcs(v[4], k, "4"))
+		writer.writerow(special_calcs(v[5], k, "5"))
+
+		for j in range(7, num_of_cds[k] + 1):
+			writer.writerow(special_calcs(v[j], k, str(j)))
+
+	elif k == "MNH":
+		#write using MNH rules
+		bnx_1_2 = get_combined_info(v[1], v[2])
+		bnx_4_5 = get_combined_info(v[4], v[5])
+
+		writer.writerow(special_calcs(bnx_1_2, k, "1&2"))
+		writer.writerow(special_calcs(bnx_4_5, k, "4&5"))
+		writer.writerow(special_calcs(v[3], k, "3"))
+
+		for j in range(6, num_of_cds[k] + 1):
+			writer.writerow(special_calcs(v[j], k, str(j)))
+	return 1
+
+def special_calcs(data, k, borough_num):
+	row = []
+	row.append(names_of_boroughs[k] + " " + borough_num)
+	row.append(pct_change(data[8]/float(data[6]), data[2]/float(data[0])))
+	row.append(pct_change(data[7]/float(data[6]), data[1]/float(data[0])))
+
+	X1_old = (data[16] + data[17]) / (data[14] + float(data[13]))
+	X1_new = (data[22] + data[21]) / (data[19] + float(data[18]))
+	row.append(pct_change(data[10], data[4]))
+	row.append(pct_change(X1_new, X1_old))
+
+	O1_old = data[24] / float(data[23])
+	O1_new = data[28] / float(data[26])
+	row.append(pct_change(O1_new, O1_old))
+
+	row.append(pct_change(float(data[30]), data[25]))
+	row.append(pct_change(float(data[27]), data[31]))
+
+	H1_old = sum([data[32], data[34], data[35]]) / float(data[32])
+	H1_new = (data[36] + data[37]) / float(data[35])
+	row.append(pct_change(H1_new, H1_old))
+
+	M1_old = (data[39] + data[40]) / float(data[38])
+	M1_new = (data[42] + data[43]) / float(data[41])
+	row.append(pct_change(M1_new, M1_old))
+	row.append(pct_change(float(data[46]), float(data[44])))
+
+	return row
+
+
+def special_results(data, k, borough_num):
+		name = names_of_boroughs[k] + " " +borough_num
+		index_pct = 0
+		index_slope = 0
+
+		#1. Population Scores
+		index_pct += -1 * index(pct_change(data[8]/float(data[6]), data[2]/float(data[0])), the_constants.PCT_CHANGE_BLACK)
+		index_pct += index(pct_change(data[7]/float(data[6]), data[1]/float(data[0])), the_constants.PCT_CHANGE_WHITE)
+		# index_pct += index(pct_change(data[9], data[3]), the_constants.PCT_CHANGE_HISPANIC)
+		index_pct += index(pct_change(data[10], data[4]), the_constants.PCT_CHANGE_RENTERS)
+
+		index_slope += index(slope(data[8], data[2]), the_constants.SLOPE_BLACK)
+		index_slope += index(slope(data[7], data[1]), the_constants.SLOPE_WHITE)
+		# index_slope += index(slope(data[9], data[3]), the_constants.SLOPE_HISPANIC)
+		index_slope += index(slope(data[10], data[4]), the_constants.SLOPE_RENTERS) 
+
+		#2. Education Scores
+		X1_old = (data[16] + data[17]) / (data[14] + float(data[13]))
+		X1_new = (data[22] + data[21]) / (data[19] + float(data[18]))
+		index_pct += index(pct_change(X1_new, X1_old), the_constants.PCT_CHANGE_EDUCATION)
+		index_slope += index(slope(X1_new, X1_old), the_constants.SLOPE_EDUCATION)
+
+		#3. Occupation
+		O1_old = data[24] / float(data[23])
+		O1_new = data[28] / float(data[26])
+		index_pct += index(pct_change(O1_new, O1_old), the_constants.PCT_CHANGE_EMPLOYMENT)
+		index_slope += index(slope(O1_new, O1_old), the_constants.SLOPE_EMPLOYMENT)
+
+		index_pct += index(pct_change(float(data[30]), data[25]), the_constants.PCT_CHANGE_PCI)
+		index_slope += index(slope(float(data[30]), float(data[25])), the_constants.SLOPE_PCI)
+
+		index_pct += index(pct_change(float(data[27]), data[31]), the_constants.PCT_CHANGE_INCOME)
+
+		#4. Housing Built
+		H1_old = sum([data[32], data[34], data[35]]) / float(data[32])
+		H1_new = (data[36] + data[37]) / float(data[35])
+		index_pct += index(pct_change(H1_new, H1_old), the_constants.PCT_CHANGE_HOUSING)
+		index_slope += index(slope(H1_new, H1_old), the_constants.SLOPE_HOUSING)
+
+		#5. Moving Score
+		M1_old = (data[39] + data[40]) / float(data[38])
+		M1_new = (data[42] + data[43]) / float(data[41])
+		index_pct += index(pct_change(M1_new, M1_old), the_constants.PCT_CHANGE_MOVING)
+		index_slope += index(slope(M1_new, M1_old), the_constants.SLOPE_MOVING)
+
+		#6. Rent Score
+		index_pct += index(pct_change(float(data[46]), float(data[44])), the_constants.PCT_CHANGE_RENT)
+		index_slope += index(slope(float(data[46]), float(data[44])), the_constants.SLOPE_RENT)
+
+		#Write the row
+		return [name, index_pct, index_slope]
+
+
+def special_write(writer, k, v):
+	if k == "BNX":
+		#write using BNX rules
+		bnx_1_2 = get_combined_info(v[1], v[2])
+		bnx_3_6 = get_combined_info(v[3], v[6])
+
+		writer.writerow(special_results(bnx_1_2, k, "1&2"))
+		writer.writerow(special_results(bnx_3_6, k, "3&6"))
+		writer.writerow(special_results(v[4], k, "4"))
+		writer.writerow(special_results(v[5], k, "5"))
+
+		for j in range(7, num_of_cds[k] + 1):
+			writer.writerow(special_results(v[j], k, str(j)))
+
+	elif k == "MNH":
+		#write using MNH rules
+		bnx_1_2 = get_combined_info(v[1], v[2])
+		bnx_4_5 = get_combined_info(v[4], v[5])
+
+		writer.writerow(special_results(bnx_1_2, k, "1&2"))
+		writer.writerow(special_results(bnx_4_5, k, "4&5"))
+		writer.writerow(special_results(v[3], k, "3"))
+
+		for j in range(6, num_of_cds[k] + 1):
+			writer.writerow(special_results(v[j], k, str(j)))
+	return 1
 
 def gentrification_index(writer, k, v):
+	if k == "BNX" or k == "MNH":
+		return special_write(writer, k, v)
+
 	borough = names_of_boroughs[k]
 
 	for key in v:
@@ -534,11 +750,13 @@ def gentrification_index(writer, k, v):
 		#1. Population Scores
 		index_pct += -1 * index(pct_change(data[8]/float(data[6]), data[2]/float(data[0])), the_constants.PCT_CHANGE_BLACK)
 		index_pct += index(pct_change(data[7]/float(data[6]), data[1]/float(data[0])), the_constants.PCT_CHANGE_WHITE)
-		#index_pct += index(pct_change(data[9], data[3]), the_constants.PCT_CHANGE_HISPANIC)
+		# index_pct += index(pct_change(data[9], data[3]), the_constants.PCT_CHANGE_HISPANIC)
+		index_pct += index(pct_change(data[10], data[4]), the_constants.PCT_CHANGE_RENTERS)
 
 		index_slope += index(slope(data[8], data[2]), the_constants.SLOPE_BLACK)
 		index_slope += index(slope(data[7], data[1]), the_constants.SLOPE_WHITE)
-		#index_slope += index(slope(data[9], data[3]), the_constants.SLOPE_HISPANIC)
+		# index_slope += index(slope(data[9], data[3]), the_constants.SLOPE_HISPANIC)
+		index_slope += index(slope(data[10], data[4]), the_constants.SLOPE_RENTERS) 
 
 		#2. Education Scores
 		X1_old = (data[16] + data[17]) / (data[14] + float(data[13]))
@@ -548,28 +766,30 @@ def gentrification_index(writer, k, v):
 
 		#3. Occupation
 		O1_old = data[24] / float(data[23])
-		O1_new = data[27] / float(data[26])
+		O1_new = data[28] / float(data[26])
 		index_pct += index(pct_change(O1_new, O1_old), the_constants.PCT_CHANGE_EMPLOYMENT)
 		index_slope += index(slope(O1_new, O1_old), the_constants.SLOPE_EMPLOYMENT)
 
-		index_pct += index(pct_change(float(data[29]), data[25]), the_constants.PCT_CHANGE_PCI)
-		index_slope += index(slope(float(data[29]), float(data[25])), the_constants.SLOPE_PCI)
+		index_pct += index(pct_change(float(data[30]), data[25]), the_constants.PCT_CHANGE_PCI)
+		index_slope += index(slope(float(data[30]), float(data[25])), the_constants.SLOPE_PCI)
+
+		index_pct += index(pct_change(float(data[27]), data[31]), the_constants.PCT_CHANGE_INCOME)
 
 		#4. Housing Built
-		H1_old = sum([data[31], data[32], data[33]]) / float(data[31])
-		H1_new = (data[35] + data[36]) / float(data[34])
+		H1_old = sum([data[32], data[34], data[35]]) / float(data[32])
+		H1_new = (data[36] + data[37]) / float(data[35])
 		index_pct += index(pct_change(H1_new, H1_old), the_constants.PCT_CHANGE_HOUSING)
 		index_slope += index(slope(H1_new, H1_old), the_constants.SLOPE_HOUSING)
 
 		#5. Moving Score
-		M1_old = (data[38] + data[39]) / float(data[37])
-		M1_new = (data[41] + data[42]) / float(data[40])
+		M1_old = (data[39] + data[40]) / float(data[38])
+		M1_new = (data[42] + data[43]) / float(data[41])
 		index_pct += index(pct_change(M1_new, M1_old), the_constants.PCT_CHANGE_MOVING)
 		index_slope += index(slope(M1_new, M1_old), the_constants.SLOPE_MOVING)
 
 		#6. Rent Score
-		index_pct += index(pct_change(float(data[45]), float(data[43])), the_constants.PCT_CHANGE_RENT)
-		index_slope += index(slope(float(data[45]), float(data[43])), the_constants.SLOPE_RENT)
+		index_pct += index(pct_change(float(data[46]), float(data[44])), the_constants.PCT_CHANGE_RENT)
+		index_slope += index(slope(float(data[46]), float(data[44])), the_constants.SLOPE_RENT)
 
 		#Write the row
 		writer.writerow([borough + " " + str(key), str(index_pct), str(index_slope)])
@@ -587,5 +807,6 @@ def main():
 	add_rent_info(the_strings.RENT_VALUE_OLD, the_strings.RENT_VALUE_NEW)
 
 	write_csv()
+	# write_population_csv()
 
 main()
