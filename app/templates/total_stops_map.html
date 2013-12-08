@@ -70,7 +70,7 @@
 
 <script type="text/javascript">
 
-var dnames = ["Brooklyn District 11", "Bronx District 4", "0", "Bronx District 3", "Brooklyn District 8", "Bronx District 5", "Brooklyn District 5", "Manhattan District 6", "Manhattan District 5", "Bronx District 12", "Staten Island District 1", "0", "Brooklyn District 6", "Brooklyn District 17", "Bronx District 6", "Brooklyn District 13", "Brooklyn District 12", "Bronx District 6", "0", "Bronx District 11", "0", "0", "Brooklyn District 7", "Brooklyn District 10", "Brooklyn District 14", "Bronx District 11", "Bronx District 9", "Bronx District 7", "Manhattan District 8", "Bronx District 14", "0", "0", "Bronx District 2", "Brooklyn District 9", "Manhattan District 2", "Manhattan District 1", "Bronx District 13", "0", "Staten Island District 2", "Staten Island District 3", "Manhattan District 12", "Manhattan District 9", "Manhattan District 3", "Brooklyn District 2", "Bronx District 9", "Bronx District 10", "Brooklyn District 15", "Brooklyn District 18", "Bronx District 3", "Bronx District 7", "Bronx District 8", "Manhattan District 7", "0", "Bronx District 4", "0", "Manhattan District 4", "Brooklyn District 16", "Bronx District 8", "Bronx District 12", "Bronx District 2", "Bronx District 5", "Brooklyn District 3", "Brooklyn District 1", "Brooklyn District 4", "Manhattan District 10", "Bronx District 1", "0", "Bronx District 10", "0", "Manhattan District 11", "Bronx District 1"];
+var dnames = ["Bensonhurt, Gravesend", "Corona, Elmhurst, Lefrak City", "Kingsbridge, Marble Hill, Riverdale", "Claremont", "Crown Heights, Prospect Heights", "Fordham, University Heights, Morris Heights", "Broadway Junction, East New York, New Lots", "Murray Hill, Stuyvesant Town", "Midtown, Times Square, Herald's Square", "Olinville, Baychester, Eastchester, Williamsbridge, Woodlawn", "Staten Island North", "Carroll Gardens, Gowanus, Park Slope, Red Hook", "Carroll Gardens, Gowanus, Park Slope, Red Hook", "East Flatbush, Farragut", "Forest Hills, Rego Park", "Coney Island, Brighton Beach", "Kensington, Ocean Parkway", "Belmont, East Tremont, West Farms", "Howard Beach, Lindenwood", "Bronxdale, Morris Park, Pelham Gardens, Pelham Parkway", "Belmont, East Tremont, West Farms", "Forest Hills, Rego Park", "Sunset Park, Windsor Terrace", "Bay Ridge, Fort Hamilton", "Ditmas Park, Flatbush, Midwood", "Bayside, Little Neck, Oakland Gardens", "Soundview, Castle Hill, Parkchester, Unionport", "Flushing, Whitestone, Queensboro Hill, Bay Terrace", "Upper East Side", "Breezy Point, Far Rockaway, The Rockaways, Somerville", "Breezy Point, Far Rockaway, The Rockaways, Somerville", "Corona, Elmhurst, Lefrak City", "Hunt's Point", "Lefferts Gardens", "Carroll Gardens, Gowanus, Park Slope, Red Hook", "Financial District, Tribeca, Wall Street", "Brookville, Floral Park, Laurelton, Queens Village, Rosedale", "Brookville, Floral Park, Laurelton, Queens Village, Rosedale", "Middle Staten Island", "Staten Island South", "Inwood ", "West Harlem, Washington Heights", "Lower East Side, East Village, Chinatown", "Brooklyn Heights, Clinton Hill, DUMBO, Fort Greene", "Kew Gardens, Ozone Park, Richmond Hill, Woodhaven", "Howard Beach, Lindenwood", "Kings Highway, Manhattan Beach, Sheepshead Bay", "Canarsie, Mill Basin", "East Elmhurt, Jackson Heights", "Norwood, Bedford Park", "Kingsbridge, Marble Hill, Riverdale", "Upper West Side, Lincoln Square", "Upper West Side, Lincoln Square", "Concourse, High Bridge", "West Village, SoHo, Greenwich Village", "Chelsea", "Brownsville", "Jamaica,  Briarwood, Fresh Meadows", "Jamaica Center, Hollis, Rochdale, St. Albans", "Long Island City, Sunnyside, Woodside", "Maspeth, Middle Village, Ridgewood", "Bedford-Stuyvesant", "Williamsburg, Greenpoint", "Buschwick", "Central Harlem", "Astoria", "Astoria", "City Island, Co-op city, Pelham Bay, Throgs Neck", "City Island, Co-op city, Pelham Bay, Throgs Neck", "East Harlem", "Mott Haven"];
 
 var width = 700, height = 800;
 
@@ -127,25 +127,32 @@ function ready(error, nyb, data){
         .attr("id", "districts")
         .attr("class", function(d,i){ return ids[i]; })
         .attr("d", path)
-            .on("mouseover", function(d,i) { 
+        .on("mouseover", function(d,i) { 
+            div.transition()        
+                .duration(200)      
+                .style("opacity", .9);   
 
-                div.transition()        
-                    .duration(200)      
-                    .style("opacity", .9);      
-                div .html("<p><strong>"+ dnames[i] +"</strong></p>" +
-                    "<p>Total Number of Stops: <span id='value'>" + rateById[i] + "</span></p>" +
-                    "<p>Black Stopped <span id='value'>" + ((black[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" +
-                    "<p>White Stopped: <span id='value'>" + ((white[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" + 
-                    "<p>Hispanic Stopped: <span id='value'>" +(( hisp[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" +
-                    "<p>Other Stopped: <span id='value'>" + ((other[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" + 
-                    "<p>Arrested: <span id='value'>" + ((arr[i]/rateById[i])*100).toFixed(2) + "</span>%</p>")
-                    .style("left", (d3.event.pageX) + "px")    
-                    .style("top", (d3.event.pageY - 28) + "px");    
-            })
+
+                d3.select(this.parentNode.appendChild(this)).transition().duration(300)
+                .style({'stroke-opacity':1,'stroke':"#08306b", 'stroke-width':'2'});
+
+            div .html("<p><strong>"+ dnames[i] +"</strong></p>" +
+                "<p>Total Number of Stops: <span id='value'>" + rateById[i] + "</span></p>" +
+                "<p>Black Stopped <span id='value'>" + ((black[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" +
+                "<p>White Stopped: <span id='value'>" + ((white[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" + 
+                "<p>Hispanic Stopped: <span id='value'>" +(( hisp[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" +
+                "<p>Other Stopped: <span id='value'>" + ((other[i]/rateById[i])*100).toFixed(2) + "</span>%</p>" + 
+                "<p>Arrested: <span id='value'>" + ((arr[i]/rateById[i])*100).toFixed(2) + "</span>%</p>")
+                .style("left", (d3.event.pageX) + "px")    
+                .style("top", (d3.event.pageY - 28) + "px");    
+        })
         .on("mouseout", function(d) {       
             div.transition()        
                 .duration(500)      
                 .style("opacity", 0);   
+
+            d3.select(this.parentNode.appendChild(this)).transition().duration(300)
+                .style({'stroke-opacity':0,'stroke':'#fff', 'stroke-width':'2'});
         });
 
 
@@ -171,32 +178,20 @@ function ready(error, nyb, data){
 
     redraw();        
 
-    // setInterval(function() {redraw();}, 2000);
-
     function redraw(){
         ids.forEach(function(r,i){ 
             data.forEach(function(d){
-                // console.log(i); 
-                // console.log(r);
                 if(parseInt(d.communitydistrict) === r){ 
-                    // console.log("whale")
-                    // console.log(d.total_stops)
                     rateById[i] = +d.total_stops;
                     hisp[i] = +d.stops_hispanic;
                     black[i] = +d.stops_black;
                     white[i] = +d.stops_white;
                     arr[i] = +d.total_arrests;
                     other[i] = +d.stops_other;
-                    console.log(r + " " + d.communitydistrict + " " + rateById[i])
-                    console.log(d)
                 }
             });
         })
         
-        console.log(rateById)
-
-        // d3.select("p").text(years[i]);
-
         svg.selectAll("#districts")
             .style("fill", function(d, i){return color(rateById[i])});
     };
