@@ -30,9 +30,15 @@
         background-color: white;
 }
 
+.carousel-caption{
+        color:black;
+        size:2em;
+        font-weight: bold;
+}
+
 #title-slide{
         margin:auto;
-        width:100%;
+        height:100%;
 }
 
 .gentrification{
