@@ -89,3 +89,10 @@ text {
 #countryLabel{
         color:#c8c8c8;
 }
+
+#carousel{
+        width:65%;
+        margin-left:auto;
+        margin-right:auto;
+        margin-bottom:2%;
+}
