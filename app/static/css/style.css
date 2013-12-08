@@ -30,6 +30,11 @@
         background-color: white;
 }
 
+#title-slide{
+        margin:auto;
+        width:100%;
+}
+
 .gentrification{
         display: none;
 }
