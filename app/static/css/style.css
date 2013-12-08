@@ -34,12 +34,18 @@
         color:black;
         size:2em;
         font-weight: bold;
+        position:static;
+}
+
+.carousel-indicators li{
+        display:none;
 }
 
 #title-slide{
         margin:auto;
         height:100%;
 }
+
 
 .gentrification{
         display: none;
