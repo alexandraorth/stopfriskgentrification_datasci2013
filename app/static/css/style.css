@@ -78,6 +78,9 @@ text {
         margin-bottom:1%;
 }
 
+.block{
+        display:block;
+}
 .bold{
         font-weight:bold;
 }
