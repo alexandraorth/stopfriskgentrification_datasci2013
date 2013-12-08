@@ -80,6 +80,7 @@ text {
 
 .block{
         display:block;
+        margin:auto;
 }
 .bold{
         font-weight:bold;
