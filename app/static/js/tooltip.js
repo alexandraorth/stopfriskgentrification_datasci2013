@@ -7,5 +7,8 @@
     .style("visibility", "hidden")
     .style("font-size","5px")
     .text("a simple tooltip");
-
+    
+	$('#carousel').carousel({  
+	  interval: false // in milliseconds  
+	});
 });
