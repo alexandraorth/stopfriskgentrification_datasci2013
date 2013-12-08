@@ -51,7 +51,10 @@ $(document).ready(function(){
             .attr("id", "districts")
             .attr("class", function(d,i){ return ids[i]; })
             .attr("d", path)
-            .on("mouseover", function(d,i) {      
+            .on("mouseover", function(d,i) {   
+                d3.select(this.parentNode.appendChild(this)).transition().duration(300)
+                    .style({'stroke-opacity':1,'stroke':"#00441b", 'stroke-width':'2'});   
+                
                 div.transition()        
                     .duration(200)      
                     .style("opacity", .9);      
@@ -59,19 +62,22 @@ $(document).ready(function(){
                     .style("left", (d3.event.pageX) + "px")     
                     .style("top", (d3.event.pageY - 28) + "px");    
             })
-            .on("mouseout", function(d) {       
+            .on("mouseout", function(d) {
+                d3.select(this.parentNode.appendChild(this)).transition().duration(300)
+                    .style({'stroke-opacity':0,'stroke':'#fff', 'stroke-width':'2'});
+
                 div.transition()        
-                .duration(500)      
-                .style("opacity", 0);   
+                    .duration(500)      
+                    .style("opacity", 0);   
             });
 
         var ls_w = 20, ls_h = 20;
 
         svg.append("text")
-        .attr("x", 20)
-        .attr("y", function(d, i){ return (i*ls_h) + 4*ls_h;})
-        .style("font-size", 25)
-        .text("Gentrification by Index")
+            .attr("x", 20)
+            .attr("y", function(d, i){ return (i*ls_h) + 4*ls_h;})
+            .style("font-size", 25)
+            .text("Gentrification by Index");
 
         var legend = svg.selectAll("g.legend")
             .data(color_domain)

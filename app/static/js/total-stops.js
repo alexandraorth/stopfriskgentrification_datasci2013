@@ -7,8 +7,6 @@ $(document).ready(function(){
 
     var ids = [35, 46, 20, 15, 32, 17, 29, 6, 5, 24, 57, 59, 30, 41, 48, 37, 36, 18, 55, 23, 18, 48, 31, 34, 38, 53, 21, 49, 8, 56, 56, 46, 14, 33, 2, 1, 55, 55, 58, 59, 12, 9, 3, 26, 51, 52, 39, 42, 45, 19, 20, 7, 7, 16, 4, 4, 40, 50, 54, 44, 47, 27, 25, 28, 10, 43, 43, 22, 22, 11, 13];
 
-    // var years = ["2005", "2006", "2007", "2008", "2009", "2010", "2011"];
-
     var legend_labels = ['< 2000 stops', '> 2000 stops', '> 5000 stops', '> 10000 stops', '> 13000 stops', '> 17000 stops', '> 21000 stops', '> 25000 stops', '> 30000 stops']
 
     var color_domain = [2000, 5000, 10000, 13000, 15000, 17000, 21000, 25000, 30000];
@@ -59,7 +57,8 @@ $(document).ready(function(){
             .attr("class", function(d,i){ return ids[i]; })
             .attr("d", path)
             .on("mouseover", function(d,i) { 
-
+                d3.select(this.parentNode.appendChild(this)).transition().duration(300)
+                .style({'stroke-opacity':1,'stroke':"#08306b", 'stroke-width':'2'});
                 div.transition()        
                     .duration(200)      
                     .style("opacity", .9);      
@@ -73,7 +72,9 @@ $(document).ready(function(){
                     .style("left", (d3.event.pageX) + "px")    
                     .style("top", (d3.event.pageY - 28) + "px");    
             })
-            .on("mouseout", function(d) {       
+            .on("mouseout", function(d) { 
+                d3.select(this.parentNode.appendChild(this)).transition().duration(300)
+                .style({'stroke-opacity':0,'stroke':'#fff', 'stroke-width':'2'});      
                 div.transition()        
                     .duration(500)      
                     .style("opacity", 0);   
