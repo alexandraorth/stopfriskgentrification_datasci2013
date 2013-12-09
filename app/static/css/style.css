@@ -2,6 +2,9 @@
 	text-align:center;
 }
 
+.addon-caption{
+        display:none;
+}
 #tooltip {
         position: absolute;
         width: 180px;
@@ -42,8 +45,9 @@
 }
 
 #title-slide{
-        margin:auto;
-        height:100%;
+        margin-left:auto;
+        margin-right:auto;
+        margin-bottom:5%;
 }
 
 
@@ -120,4 +124,10 @@ text {
 
 .important{
         font-size:1.5em;
+}
+
+#caption{
+        width:65%;
+        font-weight:bold;
+        margin:auto;
 }

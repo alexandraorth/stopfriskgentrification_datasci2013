@@ -35,6 +35,24 @@
         </div>
       </div>
     </div>
+    <div id="caption-1" class="addon-caption">
+       
+      </div>
+      <div id="caption-2" class="addon-caption">
+      Everytime a Stop and Frisk (which sometimes leads to arrests) occurs a UF-250 form is filled out.  This form is input into a database and these reports were enumerated by community district (converted from reports by policy district number).
+    </div>
+      <div id="caption-3" class="addon-caption">
+      Variables were obtained from 2000 Census information and 2010 American Community Survey Information.  The percent change for these variables were calculated for Proportion of White people, Proportion of Black people, Proportion of working age individuals in management positions, Rent, Living in a newly constructed house (10 years or less), Ratio of Bachelor and Graduate School Graduates to Less than high school graduates, Moving into the area within the last five years, Proportion of households renting, and Income.
+    </div>
+     <div id="caption-4" class="addon-caption">
+      If the community district percent change is more than the borough average then they receive a +1 for their gentrification Score.  They receive a -1 if the opposite is true.  (This relationship is reversed for Black population proportion.)
+    </div>
+       <div id="caption-5" class="addon-caption">
+      In order for groups to be statistically, significantly different from one another; the spread of the data within the groups has to be less than the spread of the data between the groups. Read more <a href="http://en.wikipedia.org/wiki/Analysis_of_variance">here</a>.
+    </div>
+    <div id="caption-6" class="addon-caption">
+      The Gentrification Index Score plotted against the Mean of the amount of Stop and Frisks.  The results from the ANOVA test (showing statistical significance) and Spearman's Rho (indicating statistical significance of trend) are also displayed.
+    </div>
     <div class="container">
       <div class="page-header" id="banner">
         <div class="row">
@@ -51,41 +69,29 @@
               </ol>
               <!-- Wrapper for slides -->
               <div class="carousel-inner">
-                 <div class="item active">
+                 <div id="slide-1" class="item active">
                   <img id="title-slide" src="/static/images/title-image.jpg" alt="...">
-                  <div class="carousel-caption">
-                    ...
-                  </div>
+                
                 </div>
-                <div class="item">
+                <div id="slide-2" class="item">
                   <img src="/static/images/process-slide-1.png" alt="...">
-                  <div class="carousel-caption">
-                    Everytime a Stop and Frisk (which sometimes leads to arrests) occurs a UF-250 form is filled out.  This form is input into a database and these reports were enumerated by community district (converted from reports by policy district number).
-                  </div>
+                
                 </div>
-                <div class="item">
+                <div id="slide-3" class="item">
                   <img src="/static/images/process-slide-2.png" alt="...">
-                  <div class="carousel-caption">
-                    Variables were obtained from 2000 Census information and 2010 American Community Survey Information.  The percent change for these variables were calculated for Proportion of White people, Proportion of Black people, Proportion of working age individuals in management positions, Rent, Living in a newly constructed house (10 years or less), Ratio of Bachelor and Graduate School Graduates to Less than high school graduates, Moving into the area within the last five years, Proportion of households renting, and Income.
-                  </div>
+                
                 </div>
-                  <div class="item">
+                  <div id="slide-4" class="item">
                   <img src="/static/images/process-slide-3.png" alt="...">
-                  <div class="carousel-caption">
-                    If the community district percent change is more than the borough average then they receive a +1 for their gentrification Score.  They receive a -1 if the opposite is true.  (This relationship is reversed for Black population proportion.)
-                  </div>
+           
                 </div>
-                  <div class="item">
+                  <div id="slide-5" class="item">
                   <img src="/static/images/process-slide-4.png" alt="...">
-                  <div class="carousel-caption">
-                    In order for groups to be statistically, significantly different from one another; the spread of the data within the groups has to be less than the spread of the data between the groups. Read more <a href="http://en.wikipedia.org/wiki/Analysis_of_variance">here</a>.
-                  </div>
+               
                 </div>
-                  <div class="item">
+                  <div id="slide-6" class="item">
                   <img src="/static/images/process-slide-5.png" alt="...">
-                  <div class="carousel-caption">
-                    The Gentrification Index Score plotted against the Mean of the amount of Stop and Frisks.  The results from the ANOVA test (showing statistical significance) and Spearman's Rho (indicating statistical significance of trend) are also displayed.
-                  </div>
+                  
                 </div>
               </div>
               <!-- Controls -->
@@ -95,7 +101,8 @@
               <a class="right carousel-control" href="#carousel" data-slide="next">
                 <span class="glyphicon glyphicon-chevron-right"></span>
               </a>
-            </div>          
+            </div>       
+            <div id="caption"></div>   
             <section id="about">
             <section id="gentrification">
                <h2><b>Gentrification</b></h2>
@@ -126,8 +133,6 @@
               <button type="button" class="btn btn-default">Stop-and-Frisk</button>
               <button type="button" class="btn btn-defaulte">Gentrification</button>
             </div>
-        
-
           </section>
            <section id="statistics">
             <h2>Statistics</h2>
@@ -194,5 +199,6 @@
       <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
       <script src="/static/js/total-stops.js"></script>
       <script src="/static/js/line-graph.js"></script>
+      <script src="/static/js/carousel-addon.js"></script>
   </body>
 </html>
