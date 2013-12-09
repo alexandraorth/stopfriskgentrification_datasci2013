@@ -131,3 +131,7 @@ text {
         font-weight:bold;
         margin:auto;
 }
+
+h1#title{
+        padding-top:1%;
+}
